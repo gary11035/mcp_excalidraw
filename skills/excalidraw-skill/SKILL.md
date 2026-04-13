@@ -123,6 +123,98 @@ What does the source content describe?
 
 ---
 
+## Layout Patterns (A–E)
+
+Choose the pattern that matches your diagram type from the Decision Tree above.
+
+#### Pattern A — Layered Stack (for architecture)
+
+```
+┌─────────────────────────────────────────┐
+│           Section Label (colored)        │
+│  ┌──────┐  ┌──────┐  ┌──────┐           │
+│  │ Node │  │ Node │  │ Node │           │
+│  └──┬───┘  └──┬───┘  └──┬───┘           │
+│     │         │         │                │
+│     └─────────┼─────────┘                │
+│               ▼                          │
+│           Section Label                  │
+│  ┌──────┐  ┌──────┐  ┌──────┐           │
+│  │ Node │  │ Node │  │ Node │           │
+│  └──────┘  └──────┘  └──────┘           │
+└─────────────────────────────────────────┘
+```
+
+- Top = consumers / callers. Bottom = storage / foundation.
+- Nodes at the same layer are placed horizontally.
+- Arrows flow downward (dependency direction).
+- Horizontal spacing is even; nodes in a row share the same height.
+
+#### Pattern B — Concept Grid (for methodology / framework)
+
+```
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│  Category A  │  │  Category B  │  │  Category C  │
+│              │  │              │  │              │
+│  ┌────────┐  │  │  ┌────────┐  │  │  ┌────────┐  │
+│  │ Item 1 │  │  │  │ Item 1 │  │  │  │ Item 1 │  │
+│  ├────────┤  │  │  ├────────┤  │  │  ├────────┤  │
+│  │ Item 2 │  │  │  │ Item 2 │  │  │  │ Item 2 │  │
+│  └────────┘  │  │  └────────┘  │  │  └────────┘  │
+└──────────────┘  └──────────────┘  └──────────────┘
+```
+
+- 2–4 columns, each a conceptual category.
+- Each column has a colored header and 2–4 child items.
+- No arrows between columns unless there is a direct dependency.
+- Spatial proximity = conceptual proximity.
+
+#### Pattern C — Comparison Matrix (for versus / evaluation)
+
+```
+         ┌── Side A ──┐     ┌── Side B ──┐   Verdict
+Dim 1    │ description │     │ description │   [tag]
+Dim 2    │ description │     │ description │   [tag]
+Dim 3    │ description │     │ description │   [tag]
+         ┌─ When A... ─┐     ┌─ When B... ─┐
+         │ criteria     │     │ criteria     │
+         └──────────────┘     └──────────────┘
+┌──────────── Meta-verdict (full width, warm yellow) ─────────────┐
+```
+
+- **Left column** = dimension labels (free-floating colored text, no container).
+- **Center two columns** = description cells, colored by side (Side A = purple, Side B = green).
+- **Verdict tags** = small rounded rectangles (~80×28px): 平局→`#FFF3CC`, Side A wins→`#d1c4e9`, Side B wins→`#c8e6c9`.
+- **Final row** = meta-insight callout, full width, `#fff3cd` background.
+
+#### Pattern D — Flowchart (for processes)
+
+```
+[Start] ──→ [Step 1] ──→ [Step 2] ──→ ◇ Decision?
+                                        │ Yes    │ No
+                                        ▼        ▼
+                                   [Path A]  [Path B]
+                                        │        │
+                                        └───┬────┘
+                                            ▼
+                                       [Outcome]
+```
+
+- Horizontal flow for linear sequences.
+- Diamond for decisions with labeled Yes/No branches.
+- Converge paths back to a single outcome node.
+- Terminal nodes (outcomes) use ellipse shape with accent color.
+
+#### Pattern E — Sidebar Composition (structure + behavior)
+
+When a single diagram needs to show both structure and behavior:
+- **Left 60%** = static architecture (Pattern A)
+- **Right 40%** = dynamic processes (Pattern D or concept map)
+
+Separate the two halves with whitespace, not a line. They share the same color system.
+
+---
+
 ## Color System (Nash Palette)
 
 **Rule: Each color = one semantic category. Assign at the start, never reassign.**
@@ -146,6 +238,24 @@ AI/LLM (special)            #e8d5fe     #6d28d9   (lavender)
 - **Saturation rule:** All other fills stay pastel. The accent ellipse is the only exception.
 - **Text color follows fill:** Use the darker stroke color of each row as text color. Never black `#000000` on colored fills.
 - **Max 5 semantic colors per diagram.** If you need more, the diagram is doing too much — split it.
+
+---
+
+## Typography Hierarchy
+
+```
+Level 1 — Diagram title      fontSize: 28, centered, color: #1e40af
+Level 2 — Subtitle           fontSize: 16, gray (#888888), one line below title
+Level 3 — Section labels     fontSize: 14, colored text matching section hue, left-aligned, no container
+Level 4 — Node titles        fontSize: 14–16, inside boxes (first line = title)
+Level 5 — Node descriptions  fontSize: 12–13, inside boxes below title
+Level 6 — Annotations        fontSize: 11, gray (#888888), outside boxes
+Core insight callout         fontSize: 15–16, bold key sentence + normal explanation lines
+```
+
+**Font:** Use `fontFamily: 1` (Virgil — Excalidraw 手寫字體) for ALL text elements. This gives diagrams a personal, sketch-quality feel rather than a printed document look. Single font family throughout — title uses larger `fontSize` only, no separate display font needed.
+
+**Dynamic Font Scaling:** Adjust `fontSize` (11, 12, 13, 14...) so text looks "full" inside its container with appropriate margins, not leaving huge empty spaces.
 
 ---
 
@@ -231,6 +341,78 @@ QUERY / RESPONSE / SYSTEM
 - Arrow notation for flow: `source → LLM → wiki pages`
 - Parenthetical clarifiers: `MCP Server (stdio)`, `brain.db (SQLite)`
 - Each line is one thought. Do not wrap a single thought across two lines.
+
+### Section Labels (text outside nodes)
+
+Every layer or group needs a **section label** — colored text placed above-left of the group, matching the group's hue:
+
+```
+消費層                          ← section label (teal text, no box)
+┌──────────┐  ┌──────────┐
+│ 服務 A   │  │  服務 B  │    ← nodes (teal fill)
+└──────────┘  └──────────┘
+
+介面層                          ← section label (purple text)
+┌────────────────┐
+│ MCP Server     │
+│ stdio transport│
+└────────────────┘
+```
+
+Section labels are **NOT** inside boxes. They float as standalone colored text and serve as the reader's navigation landmark.
+
+### Diagram Title and Subtitle
+
+```
+       X-Pert 整體架構                        ← Level 1: large, color #1e40af
+FastAPI · Qdrant · SQLite · MCP Server       ← Level 2: smaller, gray #888888
+```
+
+- **Title:** `[Subject] [Diagram Type]` — e.g. "X-Pert 整體架構", "RAG 方法論".
+- **Subtitle:** A one-line tech stack summary using middle-dot (·) as separator.
+- Together they answer: "What am I looking at, and what world does it belong to?"
+
+### The "No Empty Box" Test
+
+After placing all nodes, run this test:
+1. Point to each box in the diagram.
+2. Read only the text inside that box.
+3. Ask: "Do I know what this is and why it exists?"
+4. If no → add description lines.
+5. If you cannot write a description → this node is at the wrong abstraction level or should not be a separate node.
+
+**A diagram full of colored rectangles without text is a wireframe, not a concept visualization.**
+
+---
+
+## Abstraction Rules
+
+Source documents live at **implementation level** (code, schemas, CLI commands). Diagrams must climb to **concept level** (knowledge model, data flow pattern, design tradeoffs). Strip away implementation details; preserve design intent.
+
+### Translation Table
+
+| Source (implementation) | Diagram (concept) |
+|---|---|
+| SQL schema with 9 tables | "Storage layer: brain.db" with table names as small nodes |
+| 500 lines of TypeScript in 5 files | "Core library" with file names as small nodes |
+| 15-step CLI command reference | "Interface layer" with two nodes: "MCP Server" + "CLI" |
+| Detailed ranking formula (FTS5 × 0.4 + vector × 0.6) | Flowchart: "FTS5 Keywords" + "Vector Semantic" → merge → result |
+| 7-paragraph design rationale | One callout box with the core sentence |
+| Code example with 30 lines | Omit entirely. Not for this medium. |
+
+### What to Cut
+
+- Code snippets — always omit
+- Configuration examples — always omit
+- Step-by-step instructions — compress to 3–5 flow nodes maximum
+- Error handling / edge cases — omit
+- Version numbers / dependencies — omit unless they are the point
+
+### What to Promote
+
+- Design tradeoffs (Why X over Y?) → becomes a comparison row or callout
+- Naming conventions → becomes a legend or inline label
+- The "core insight" paragraph (every good spec has one) → becomes the bottom callout box
 
 ---
 

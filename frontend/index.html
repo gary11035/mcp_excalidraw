@@ -4,6 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Excalidraw POC - Backend API Integration</title>
+    <!-- 霞鶩文楷 GB Screen：Excalidraw 中文字體補丁 -->
+    <style>
+        @font-face {
+            font-family: "LXGWWenKaiGBScreen";
+            src: url("https://cdn.jsdelivr.net/npm/lxgw-wenkai-gbscreen-webfont@1.1.0/lxgwwenkaikgbscreen.woff2") format("woff2");
+            font-display: swap;
+        }
+
+        /*
+         * 覆蓋 Excalidraw canvas 的字體 CSS 變數：
+         * 讓英文走原本的手繪/程式碼字體，中文字自動 fallback 到霞鶩文楷。
+         * fontFamily: "1" → Virgil (手繪)
+         * fontFamily: "2" → Hershey (等寬)
+         * fontFamily: "3" → Cascadia (程式碼)
+         * fontFamily: "4" → Assistant (UI)
+         */
+        :root {
+            --excalidraw-font-virgil: "Virgil", "LXGWWenKaiGBScreen", sans-serif;
+            --excalidraw-font-cascadia: "Cascadia", "LXGWWenKaiGBScreen", monospace;
+            --excalidraw-font-assistant: "Assistant", "LXGWWenKaiGBScreen", sans-serif;
+        }
+
+        /* Excalidraw 自身 canvas 的字體 fallback 注入 */
+        .excalidraw canvas,
+        .excalidraw .layer-ui__wrapper {
+            font-family: "Virgil", "LXGWWenKaiGBScreen", sans-serif;
+        }
+    </style>
     <style>
         body {
             margin: 0;

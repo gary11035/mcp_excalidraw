@@ -51,6 +51,189 @@ Two modes are available. Try MCP first — it has more capabilities.
 
 ---
 
+## Language Rule (MANDATORY)
+
+**All diagram text MUST be written in Traditional Chinese (繁體中文).** This applies to:
+
+- Diagram title and subtitle
+- Section labels (layer names, group names)
+- Node titles and node descriptions
+- Arrow labels
+- Core insight callout text
+- Annotations and credits
+
+**Only keep in English when:**
+- The term is a proper technical identifier that must not be translated (e.g., file names: `main.py`, `rag_utils.py`; API paths: `/v1/chat/completions`; library names: `FastAPI`, `OpenAI`)
+- The original source uses an English acronym as a fixed term (e.g., `RAG`, `SSE`, `MCP`)
+
+For all other content — labels, descriptions, insights, section names — use 繁體中文.
+
+---
+
+## Design Philosophy
+
+You are not "drawing a diagram." You are **re-encoding information architecture**. A linear document has one reading path; a structural diagram has simultaneous visual entry points. Your job is to make the reader grasp in 10 seconds what took 10 minutes to read.
+
+**Three governing principles:**
+
+1. **One diagram, one question.** Each diagram answers exactly one cognitive question: "What is it made of?" (architecture), "Why does it work?" (methodology), or "How is it different?" (comparison). Never mix these.
+2. **Content determines form.** The type of information dictates the visual structure. Do not pick a chart type first and force content into it.
+3. **Abstraction ladder.** Source documents live at implementation level (code, schemas, CLI commands). Diagrams must climb to concept level (knowledge model, data flow pattern, design tradeoffs). Strip away implementation details; preserve design intent.
+
+**The Isomorphism Test:** If you removed all text, would the structure alone communicate the concept? If not, redesign.
+
+**The Education Test:** Could someone learn something concrete from this diagram, or does it just label boxes? A good diagram teaches — it shows actual formats, real event names, concrete examples.
+
+---
+
+## Diagram Type Decision Tree
+
+Before drawing, decide which diagram type answers the source content's core question:
+
+```
+What does the source content describe?
+│
+├─ A system with parts that depend on each other
+│  → Layered Architecture (top=consumer, bottom=storage)
+│  → Question: "What is it made of?"
+│
+├─ A philosophy or framework with parallel concepts
+│  → Concept Grid (2–4 columns, each a category)
+│  → Question: "Why does it work this way?"
+│
+├─ Two or more alternatives evaluated on dimensions
+│  → Comparison Matrix (Side A vs Side B + verdict tags)
+│  → Question: "How is it different from X?"
+│
+├─ A sequence of steps with decisions
+│  → Flowchart (horizontal flow, diamond for decisions)
+│  → Question: "What happens when X is triggered?"
+│
+└─ A mix of structure + process
+   → Sidebar Composition (left 60% architecture + right 40% process)
+   → Question: "What is it and how does it work?"
+```
+
+**Pre-drawing analysis — do this in order:**
+
+1. Mark every section of the source that answers one of the five questions above.
+2. Each cognitive question becomes one diagram (a typical technical spec produces 2–4).
+3. Extract: **Nouns** → nodes, **Verbs/relationships** → arrows, **Categories** → color groups, **Hierarchies** → spatial position.
+4. Decide if simple/conceptual (abstract shapes) or comprehensive/technical (concrete examples, real data).
+
+---
+
+## Color System (Nash Palette)
+
+**Rule: Each color = one semantic category. Assign at the start, never reassign.**
+
+```
+Layer / Category            Fill        Stroke / Text
+────────────────────────────────────────────────────────
+消費層 Consumer/external    #b2ebf2     #00838f   (teal)
+介面層 Interface/API        #d1c4e9     #512da8   (purple)
+核心庫 Core logic           #c8e6c9     #2e7d32   (mint green)
+存儲層 Storage/data         #dcedc8     #558b2f   (light olive)
+技能層 Skills               #ffe0b2     #e65100   (peach/orange)
+流程步驟 Process steps      #f8bbd0     #880e4f   (coral pink)
+結果/高亮 Result            #b2dfdb     #00695c   (mint teal)
+決策 Decision               #fff9c4     #f57f17   (light gold)
+AI/LLM (special)            #e8d5fe     #6d28d9   (lavender)
+核心洞察 Core insight       #fff3cd     #856404   (warm yellow)
+```
+
+- **Accent trigger rule:** The single most important entry point MAY use a high-saturation ellipse (`#FFB300` gold fill, `#E65100` stroke). Limit to **one** per diagram.
+- **Saturation rule:** All other fills stay pastel. The accent ellipse is the only exception.
+- **Text color follows fill:** Use the darker stroke color of each row as text color. Never black `#000000` on colored fills.
+- **Max 5 semantic colors per diagram.** If you need more, the diagram is doing too much — split it.
+
+---
+
+## Text Writing Inside Nodes
+
+**A box without text is a colored rectangle. A box with text is knowledge.** Every node MUST contain text. No exceptions.
+
+### Node Anatomy
+
+Every node has exactly two text layers:
+
+```
+┌──────────────────────────────────────┐
+│  Title (larger font, first line)     │
+│  Description line 1                  │
+│  Description line 2                  │
+│  Description line 3 (max)            │
+└──────────────────────────────────────┘
+```
+
+- **Title** = WHAT it is. The name. 1–5 words.
+- **Description** = WHY it matters or WHAT it does. 1–3 lines of sentence fragments.
+
+Both are mandatory. A node with only a title is incomplete.
+
+### Five Description Patterns (pick the one that fits)
+
+**Pattern 1 — Role statement** (components): Verb-first fragments stating what it does.
+```
+FastAPI 路由層
+接收 HTTP 請求
+驗證 token / 轉發
+回傳 JSON 回應
+```
+
+**Pattern 2 — Bullet-style properties** (concepts): 2–4 key properties using slashes.
+```
+RAG 檢索策略
+語義向量 / 關鍵字 FTS5
+Top-K 合併後重排
+超出 token 限制則截斷
+```
+
+**Pattern 3 — Input → Output** (process steps): Arrow notation within text.
+```
+向量嵌入
+文字 → OpenAI Embedding API
+→ 1536 維向量儲存 Qdrant
+→ cosine similarity 查詢
+```
+
+**Pattern 4 — Contrast pair** (comparison cells): Key fact + implication.
+```
+Markdown 文件目錄
+Git-friendly，人類可讀
+修改版本完整可追蹤
+```
+
+**Pattern 5 — Enumeration** (leaf nodes listing members):
+```
+日誌分類
+ERROR / WARNING / INFO
+QUERY / RESPONSE / SYSTEM
+```
+
+### Text Density Rules
+
+| Node type | Title | Description | Lines |
+|-----------|:-----:|:-----------:|:-----:|
+| Architecture component | YES | YES | 1–2 |
+| Concept / model | YES | YES | 2–4 |
+| Process step | YES | YES | 1–2 |
+| Comparison cell | YES | YES | 2 (fact + implication) |
+| Decision diamond | YES (the question) | NO | 0 |
+| Core insight callout | NO | YES — the insight IS the text | 1–3 sentences |
+
+**Balance rule:** If any node in a group has a description, ALL nodes in that group must have descriptions.
+
+### Text Formatting Rules
+
+- **No markdown syntax** inside text. No `**bold**`, no `- bullets`, no `1. numbered`.
+- Slashes for alternatives: `搜索/綜合/引用`
+- Arrow notation for flow: `source → LLM → wiki pages`
+- Parenthetical clarifiers: `MCP Server (stdio)`, `brain.db (SQLite)`
+- Each line is one thought. Do not wrap a single thought across two lines.
+
+---
+
 ## Coordinate System
 
 The canvas uses a 2D coordinate grid: **(0, 0) is the origin**, **x increases rightward**, **y increases downward**. Plan your layout before writing any JSON.
@@ -61,6 +244,20 @@ The canvas uses a 2D coordinate grid: **(0, 0) is the origin**, **x increases ri
 - Shape width: `max(160, labelCharCount * 9)` to prevent text truncation
 - Shape height: 60px single-line, 80px two-line labels
 - Background/zone padding: 50px on all sides around contained elements
+
+**Spatial semantics:**
+
+| Position | Meaning |
+|----------|---------|
+| Top | Consumers, callers, external-facing |
+| Bottom | Storage, foundation, infrastructure |
+| Left | Primary / main path |
+| Right | Secondary / supplementary info / sidebar |
+| Center | Core, the thing everything connects to |
+| Bottom-center | Core insight / meta-conclusion callout |
+| Bottom-right | Credits, authorship |
+
+**Whitespace = Importance:** The most important element has the most empty space around it. Dense clusters indicate a logical unit. Space between clusters indicates a boundary.
 
 ---
 
@@ -101,6 +298,17 @@ Arrow labels are placed at the midpoint of the arrow. On short arrows, they over
 - If you're adding a label to every arrow, reconsider — it usually adds visual noise, not clarity.
 - Keep arrow labels to ≤ 12 characters. Prefer omitting them entirely on dense diagrams.
 
+### 4. Other common mistakes
+
+| Mistake | Why it fails | Fix |
+|---------|-------------|-----|
+| **Empty boxes / title-only nodes** | Colored rectangles without text are meaningless shapes. | Every node gets a title + 1–3 description lines. |
+| Using 6+ colors | Reader can't decode the color system. | Max 5 semantic colors per diagram. |
+| Arrows everywhere | Spaghetti. Reader gives up. | Use spatial grouping for "belongs to" instead of arrows. |
+| Everything the same size | No hierarchy signal. | Key nodes larger; leaf nodes smaller. |
+| Missing section labels | Reader can't tell which group a node belongs to. | Add colored text label (no box) above-left of every cluster. |
+| Missing diagram title | Reader has no entry point. | Always start with large title + one-line gray subtitle. |
+
 ---
 
 ## Quality: Why It Matters (and How to Check)
@@ -118,6 +326,7 @@ After each `batch_create_elements` / `POST /api/elements/batch`, take a screensh
 5. **Spacing** — At least 40px gap between elements. Cramped layouts are hard to read.
 6. **Readability** — Font size ≥ 16 for body text, ≥ 20 for titles.
 7. **Zone label placement** — If you used `text`/`label.text` on a background zone rectangle, the zone label will be centered in the middle of the zone, overlapping everything inside. Fix: delete the bound text element and add a free-standing text element at the top of the zone instead (see Layout Anti-Patterns above).
+8. **No empty boxes** — Point to each box. Read only the text inside. Ask: "Do I know what this is and why it exists?" If no → add description lines.
 
 If you find any issue: **stop, fix it, re-screenshot, then continue.** Say "I see [issue], fixing it" rather than glossing over problems. Only proceed once all checks pass.
 
@@ -134,21 +343,22 @@ If you find any issue: **stop, fix it, re-screenshot, then continue.** Say "I se
 ### MCP Mode
 
 1. Call `read_diagram_guide` for design best practices (colors, fonts, anti-patterns).
-2. Plan your coordinate grid on paper/in comments — map out tiers and x-positions before writing JSON.
-3. Optional: `clear_canvas` to start fresh.
-4. Use `batch_create_elements` — create shapes and arrows in one call. Custom `id` fields (e.g. `"id": "auth-svc"`) make later updates easy.
-5. Set shape widths using `max(160, labelLength * 9)`. Use `text` field for labels.
-6. Bind arrows with `startElementId` / `endElementId` — they auto-route to element edges.
-7. `set_viewport` with `scrollToContent: true` to auto-fit.
-8. `get_canvas_screenshot` → run Quality Checklist → fix issues before next iteration.
+2. **Run the Decision Tree** (see above) — decide what type of diagram and how many.
+3. Plan your coordinate grid on paper/in comments — map out tiers and x-positions before writing JSON.
+4. Optional: `clear_canvas` to start fresh.
+5. Use `batch_create_elements` — create shapes and arrows in one call. Custom `id` fields (e.g. `"id": "auth-svc"`) make later updates easy.
+6. Set shape widths using `max(160, labelLength * 9)`. Use `text` field for labels.
+7. Bind arrows with `startElementId` / `endElementId` — they auto-route to element edges.
+8. `set_viewport` with `scrollToContent: true` to auto-fit.
+9. `get_canvas_screenshot` → run Quality Checklist → fix issues before next iteration.
 
 **MCP element + arrow example:**
 ```json
 {"elements": [
-  {"id": "lb", "type": "rectangle", "x": 300, "y": 50, "width": 180, "height": 60, "text": "Load Balancer"},
-  {"id": "svc-a", "type": "rectangle", "x": 100, "y": 200, "width": 160, "height": 60, "text": "Web Server 1"},
-  {"id": "svc-b", "type": "rectangle", "x": 450, "y": 200, "width": 160, "height": 60, "text": "Web Server 2"},
-  {"id": "db", "type": "rectangle", "x": 275, "y": 350, "width": 210, "height": 60, "text": "PostgreSQL"},
+  {"id": "lb", "type": "rectangle", "x": 300, "y": 50, "width": 180, "height": 60, "text": "負載均衡器\nNginx / 443", "backgroundColor": "#b2ebf2"},
+  {"id": "svc-a", "type": "rectangle", "x": 100, "y": 200, "width": 160, "height": 60, "text": "Web Server 1\nPort 8080", "backgroundColor": "#c8e6c9"},
+  {"id": "svc-b", "type": "rectangle", "x": 450, "y": 200, "width": 160, "height": 60, "text": "Web Server 2\nPort 8080", "backgroundColor": "#c8e6c9"},
+  {"id": "db", "type": "rectangle", "x": 275, "y": 350, "width": 210, "height": 60, "text": "PostgreSQL\n主資料庫 / Port 5432", "backgroundColor": "#dcedc8"},
   {"type": "arrow", "x": 0, "y": 0, "startElementId": "lb", "endElementId": "svc-a"},
   {"type": "arrow", "x": 0, "y": 0, "startElementId": "lb", "endElementId": "svc-b"},
   {"type": "arrow", "x": 0, "y": 0, "startElementId": "svc-a", "endElementId": "db"},
@@ -170,9 +380,9 @@ curl -X POST http://localhost:3000/api/elements/batch \
   -H "Content-Type: application/json" \
   -d '{
     "elements": [
-      {"id": "svc-a", "type": "rectangle", "x": 100, "y": 100, "width": 160, "height": 60, "label": {"text": "Service A"}},
-      {"id": "svc-b", "type": "rectangle", "x": 400, "y": 100, "width": 160, "height": 60, "label": {"text": "Service B"}},
-      {"type": "arrow", "x": 0, "y": 0, "start": {"id": "svc-a"}, "end": {"id": "svc-b"}, "label": {"text": "calls"}}
+      {"id": "svc-a", "type": "rectangle", "x": 100, "y": 100, "width": 160, "height": 60, "label": {"text": "服務 A"}},
+      {"id": "svc-b", "type": "rectangle", "x": 400, "y": 100, "width": 160, "height": 60, "label": {"text": "服務 B"}},
+      {"type": "arrow", "x": 0, "y": 0, "start": {"id": "svc-a"}, "end": {"id": "svc-b"}, "label": {"text": "呼叫"}}
     ]
   }'
 ```
@@ -286,6 +496,20 @@ curl -X POST http://localhost:3000/api/elements/from-mermaid \
 ## Workflow: Duplication
 
 `duplicate_elements` with `elementIds` and optional `offsetX`/`offsetY` (default: 20, 20). Useful for repeated patterns or copying layouts.
+
+---
+
+## Multi-Diagram Set Rules
+
+When producing 2+ diagrams from the same source:
+
+1. **Shared color assignments.** If "core library" is green in Diagram 1, it stays green in Diagram 2.
+2. **Escalating abstraction.** Diagram 1 = architecture (most concrete). Diagram 2 = methodology (more abstract). Diagram 3 = comparison (most evaluative).
+3. **Consistent title format.** `[Subject] [Diagram Type]` — e.g. "X-Pert 整體架構", "RAG 方法論", "方案 A vs 方案 B 對比".
+4. **Consistent subtitle.** One-line tech stack summary using middle-dot (·) separator.
+5. **Same canvas proportions.** All diagrams use roughly the same width:height ratio (16:9 landscape preferred).
+
+---
 
 ## Error Recovery
 
